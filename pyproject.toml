@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "trackfit"
+version = "0.1.0"
+description = "An application for gym performance calculator"
+authors = ["CarlosOchoa8 <ochoa.carlos8@outlook.com>"]
+license = "Apache-2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.12"
+uvicorn = "^0.34.2"
+pytest = "^8.3.5"
+pandas = "^2.2.3"
+sqlalchemy = "^2.0.40"
+openpyxl = "^3.1.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,49 @@
+networks:
+  trackfit-net:
+
+services:
+  trackfit-service:
+    container_name: trackfit-service
+    image: ${IMAGE_NAME}
+    build:
+      context: .
+      target: builder
+    command: uvicorn src.main:app --host 0.0.0.0 --port 80 --reload --workers 4
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - .env
+    ports:
+      - 80:80
+    depends_on:
+      db:
+        condition: service_started
+    networks:
+      - trackfit-net
+
+  db:
+    image: postgres:15.3
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - TZ=America/Mexico_City
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - trackfit-net
+    ports:
+      - "5533:5432"
+
+  migration:
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?sslmode=disable
+    image: trackfit-service:latest
+    networks:
+      - trackfit-net
+    entrypoint: /bin/sh -c "dbmate wait && dbmate up"
+    depends_on:
+      - db
+
+volumes:
+  dbdata:
