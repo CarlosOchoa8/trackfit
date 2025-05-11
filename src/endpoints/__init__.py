@@ -1,0 +1,1 @@
+from src.endpoints.exercise_performance import exercise_router

@@ -2,12 +2,14 @@
 Module for the fastapi setup.
 """
 
-from fastapi import FastAPI, Depends
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+# from fastapi.staticfiles import StaticFiles
 
+from src.routers import router
 
-app = FastAPI()
+# app = FastAPI()
+app = FastAPI(openapi_prefix="/trackfit_api")
 
 #  Setup CORS Middleware
 
@@ -23,6 +25,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(
+    router=router
+)
+
 @app.get("/")
 def home():
-    return "Oka"
+    return {"Status": "Ok"}
