@@ -9,7 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.routers import router
 
 # app = FastAPI()
-app = FastAPI(openapi_prefix="/trackfit_api")
+# app = FastAPI(openapi_prefix="/trackfit_api")
+app = FastAPI(root_path="/trackfit_api")
 
 #  Setup CORS Middleware
 
