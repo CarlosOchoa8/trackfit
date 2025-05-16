@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
 
-class PerformanceCalculator(ABC):
+class PerformanceCalculatorBaseClase(ABC):
     """Performance base class."""
 
     @abstractmethod
-    def calculate_performance(self) -> dict:
+    def calculate_performance(self, data: list) -> dict:
         """Calculate performance base."""
