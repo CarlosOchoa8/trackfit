@@ -5,11 +5,14 @@ from src.schemas import ExerciseDataBody
 class VolumePerformanceCalculator(PerformanceCalculatorBaseClase):
     """Volume Performance Calculator class."""
 
-    def calculate_performance(self, data: ExerciseDataBody):
+    def calculate_performance(self, data: ExerciseDataBody) -> Dict[str, Dict]:
         """Calculate Training Volume performance."""
         volume_total_dict = self._calculate_total_volume(data=data)
         total_session_volume_dict = self._calculate_session_volume(data=data)
-        return "Volume Performance"
+
+        return {
+            "volume_performance": {**volume_total_dict, **total_session_volume_dict}
+            }
 
     def _calculate_total_volume(self, data: List) -> Dict[str, Dict]:
         """Calculate Total Training Volume."""
