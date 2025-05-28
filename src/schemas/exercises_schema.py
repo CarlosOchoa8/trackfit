@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Dict
 from typing import Any, List
 
 from pydantic import BaseModel
@@ -6,16 +7,17 @@ from pydantic import BaseModel
 
 class CalculatePerformanceModel(BaseModel):
     """Response data Model."""
-    response: dict
+    data: Dict
+    # response: dict
 
 
 class ExerciseDataModel(BaseModel):
     """Exercise info"""
     date: str | Any | datetime
-    weight: str | int
+    weight: str | int | float
     reps: str | int
     series: str | int
-    intensityMeasure: str
+    intensityMeasure: str | int | float
 
 
 class ExerciseData(BaseModel):
