@@ -1,1 +1,1 @@
-from src.endpoints.exercise_performance import exercise_router
+from src.endpoints.exercise_performance import performance_router

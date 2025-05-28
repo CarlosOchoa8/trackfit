@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from src.endpoints import exercise_router
+from src.endpoints import performance_router
 
 router = APIRouter()
 
-router.include_router(exercise_router)
+router.include_router(performance_router)
