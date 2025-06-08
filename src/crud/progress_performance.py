@@ -17,7 +17,6 @@ class WorkoutProgressionClass(PerformanceCalculatorBaseClase):
         exercise_by_date = {}
 
         for ex in data.exercises:
-            print("====================")
             if exercise_by_date.get(ex.name) is None:
                 exercise_by_date[ex.name] = {}
                 for a in ex.data:
@@ -43,7 +42,12 @@ class WorkoutProgressionClass(PerformanceCalculatorBaseClase):
             exercise_by_date[name] = {
                 "start_date": init_date, 
                 "end_date": final_date,
-                "progress": (final_weight - init_weight) / init_weight * 100
+                "progress": {
+                    "start_weight": init_weight,
+                    "end_weight": final_weight,
+                    "weight_diff": final_weight - init_weight,
+                    "percentage_progression": f"{round((final_weight - init_weight) / init_weight * 100, 2)}%"
+                }
             }
 
         print("data =>", exercise_by_date)
