@@ -1,2 +1,4 @@
+from .performance_base_class import PerformanceCalculatorBaseClase
 from .performance_calculator_class import PerformanceCalculator
 from .max_rep import MaxRep
+from .progress_performance import WorkoutProgressionClass
