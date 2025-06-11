@@ -33,7 +33,6 @@ class WorkoutProgressionClass(PerformanceCalculatorBaseClase):
             exercise_by_date[name].clear()
             exercise_by_date[name].update(ordered_data)
 
-        print("Progresiones =>")
         for name, data in exercise_by_date.items():
             init_weight = list(data.values())[0]
             init_date = list(data.keys())[0]
