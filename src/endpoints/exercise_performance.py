@@ -4,8 +4,8 @@ from fastapi import APIRouter, HTTPException, status
 
 from src.crud import MaxRep, PerformanceCalculator
 from src.crud.volume_performance import VolumePerformanceCalculator
-from src.schemas import (CalculatePerformanceModel, ExerciseData,
-                         ExerciseDataBody, ExerciseDataModel)
+from src.crud import WorkoutProgressionClass
+from src.schemas import CalculatePerformanceModel, ExerciseDataBody
 
 router = APIRouter(prefix="/performance")
 
@@ -21,11 +21,16 @@ def calculate(exercise_data: ExerciseDataBody) -> CalculatePerformanceModel:
         _1rm_theorical = perf_obj.calculate_performance(
             performance_class=MaxRep
         )
+        workout_progress = perf_obj.calculate_performance(
+            performance_class=WorkoutProgressionClass
+        )
+
 
         return CalculatePerformanceModel(
             data={
                 **volume_performance,
-                "1rm_performance": _1rm_theorical
+                "1rm_performance": _1rm_theorical,
+                **workout_progress,
             }
         )
     except Exception as exc:
