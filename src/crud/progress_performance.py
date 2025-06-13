@@ -1,5 +1,6 @@
-from datetime import datetime, date
+from datetime import date, datetime
 from typing import Dict
+
 from src.crud import PerformanceCalculatorBaseClase
 from src.schemas import ExerciseDataBody
 
@@ -10,35 +11,34 @@ class WorkoutProgressionClass(PerformanceCalculatorBaseClase):
         """Return workout exercise perormance."""
         load_progress = self._calculate_load_progress(data=data)
 
-        return "Hola"
+        return load_progress
     def _calculate_load_progress(self, data: ExerciseDataBody) -> Dict:
         """Return dict of progress in load by exercise."""
-        print("calculando progreso en cargas")
-        exercise_by_date = {}
+        ex_load_progress = {}
 
         for ex in data.exercises:
-            if exercise_by_date.get(ex.name) is None:
-                exercise_by_date[ex.name] = {}
+            if ex_load_progress.get(ex.name) is None:
+                ex_load_progress[ex.name] = {}
                 for a in ex.data:
-                    if a.date not in exercise_by_date[ex.name]:
-                        exercise_by_date[ex.name][a.date] = a.weight
-                    if a.weight > exercise_by_date[ex.name][a.date]:
-                        exercise_by_date[ex.name][a.date] = a.weight
+                    if a.date not in ex_load_progress[ex.name]:
+                        ex_load_progress[ex.name][a.date] = a.weight
+                    if a.weight > ex_load_progress[ex.name][a.date]:
+                        ex_load_progress[ex.name][a.date] = a.weight
             else:
                 print(".")
 
-        for name, data in exercise_by_date.items():
+        for name, data in ex_load_progress.items():
             ordered_dates = sorted(data, reverse=False)
             ordered_data = {date: data[date] for date in ordered_dates}
-            exercise_by_date[name].clear()
-            exercise_by_date[name].update(ordered_data)
+            ex_load_progress[name].clear()
+            ex_load_progress[name].update(ordered_data)
 
-        for name, data in exercise_by_date.items():
+        for name, data in ex_load_progress.items():
             init_weight = list(data.values())[0]
             init_date = list(data.keys())[0]
             final_weight = list(data.values())[-1]
             final_date = list(data.keys())[-1]
-            exercise_by_date[name] = {
+            ex_load_progress[name] = {
                 "start_date": init_date, 
                 "end_date": final_date,
                 "progress": {
@@ -49,5 +49,4 @@ class WorkoutProgressionClass(PerformanceCalculatorBaseClase):
                 }
             }
 
-        print("data =>", exercise_by_date)
-        return {"Data": "Here"}
+        return {"load_progress": ex_load_progress}
