@@ -9,6 +9,7 @@ class VolumePerformanceCalculator(PerformanceCalculatorBaseClase):
         """Calculate Training Volume performance."""
         volume_total_dict = self._calculate_total_volume(data=data)
         total_session_volume_dict = self._calculate_session_volume(data=data)
+        effective_volume_dict = self._calculate_effective_volume(data=data)
 
         return {
             "volume_performance": {**volume_total_dict, **total_session_volume_dict}
@@ -77,3 +78,41 @@ class VolumePerformanceCalculator(PerformanceCalculatorBaseClase):
         return {
             "total_session_volume": sessions_volume
         }
+
+    def _calculate_effective_volume(self, data: ExerciseDataBody) -> Dict:
+        """Calculate effective volume based on level."""
+        effective_series = {}
+        for ex in data.exercises:
+            if ex.name not in effective_series:
+                effective_series[ex.name] = {}
+
+            for data in ex.data:
+                intensity_measure, value = data.intensityMeasure.split(":")
+                measure_factor = self.__intensity_measure_factor(measure=intensity_measure, value=value)
+                effective_series[ex.name] = (data.weight * data.reps * value) * measure_factor
+                print(effective_series[ex.name])
+
+    def __intensity_measure_factor(self, measure: str, value: float) -> float:
+        """Return factor factor based con intensity measure."""
+        value = float(value) // 1
+        print("VALOR DE VALUR", value)
+        if measure == "RIR":
+            if value == 2:
+                return .9
+            if value == 3:
+                return .7
+            if value == 4:
+                return .5
+            if value == 5:
+                return .2
+            if value == 5:
+                return .0
+        if measure == "RPE":
+            if value == 6:
+                return .5
+            if value == 7:
+                return .7
+            if value == 8:
+                return .9
+            if value >= 9:
+                return 1
