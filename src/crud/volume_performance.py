@@ -88,31 +88,49 @@ class VolumePerformanceCalculator(PerformanceCalculatorBaseClase):
 
             for data in ex.data:
                 intensity_measure, value = data.intensityMeasure.split(":")
-                measure_factor = self.__intensity_measure_factor(measure=intensity_measure, value=value)
-                effective_series[ex.name] = (data.weight * data.reps * value) * measure_factor
-                print(effective_series[ex.name])
+                value = float(value) // 1
 
+                measure_factor = self.__intensity_measure_factor(measure=intensity_measure, value=value)
+
+                factor_effective = (data.weight * data.reps) * measure_factor
+                brut_volume = data.weight * data.reps
+                if data.date not in effective_series[ex.name]:
+                    effective_series[ex.name][data.date] = {
+                        "factor_effectivenes": [factor_effective],
+                        "volume_brut": [brut_volume]
+                        }
+                else:
+                    effective_series[ex.name][data.date]["factor_effectivenes"].append(factor_effective)
+                    effective_series[ex.name][data.date]["volume_brut"].append(brut_volume)
+
+        for ex, val in effective_series.items():
+            effective_total_vol = 0
+            brut_total_vol = 0
+            tmp_key = None
+
+            for _, v in val.items():
+                effective_total_vol = sum(v.get("factor_effectivenes"))
+                brut_total_vol = sum(v.get("volume_brut"))
+                effective_volume = (effective_total_vol / brut_total_vol) * 100
+                tmp_key = _
+
+            effective_series[ex][tmp_key] = {"effective_volume": f"{effective_volume}%"}
+
+
+# C0406994358
     def __intensity_measure_factor(self, measure: str, value: float) -> float:
         """Return factor factor based con intensity measure."""
-        value = float(value) // 1
-        print("VALOR DE VALUR", value)
-        if measure == "RIR":
-            if value == 2:
-                return .9
-            if value == 3:
-                return .7
-            if value == 4:
-                return .5
-            if value == 5:
-                return .2
-            if value == 5:
-                return .0
-        if measure == "RPE":
-            if value == 6:
-                return .5
-            if value == 7:
-                return .7
-            if value == 8:
-                return .9
-            if value >= 9:
-                return 1
+        m_factor = {
+            2: .9,
+            3: .7,
+            4: .5,
+            5: .2, #O 0
+            6: .5,
+            7: .7,
+            8: .9,
+            9: 1,
+            10: 1
+        }
+        print("---------------------- >")
+        print("VALOR DE VALUR", m_factor.get(value))
+        return m_factor.get(value)
