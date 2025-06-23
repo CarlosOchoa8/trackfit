@@ -34,7 +34,7 @@ def calculate(exercise_data: ExerciseDataBody) -> CalculatePerformanceModel:
             }
         )
     except Exception as exc:
-        print("Hubo un error =>", exc)
+        print("Hubo un error ==>", exc)
         traceback.print_exc()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
