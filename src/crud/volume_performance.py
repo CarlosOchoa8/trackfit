@@ -1,4 +1,4 @@
-from typing import List, Dict 
+from typing import List, Dict, Any
 from src.crud.performance_base_class import PerformanceCalculatorBaseClase
 from src.schemas import ExerciseDataBody
 
@@ -79,29 +79,29 @@ class VolumePerformanceCalculator(PerformanceCalculatorBaseClase):
             "total_session_volume": sessions_volume
         }
 
-    def _calculate_effective_volume(self, data: ExerciseDataBody) -> Dict:
+    def _calculate_effective_volume(self, data: ExerciseDataBody) -> Dict[str, Any]:
         """Calculate effective volume based on level."""
         effective_series = {}
         for ex in data.exercises:
             if ex.name not in effective_series:
                 effective_series[ex.name] = {}
 
-            for data in ex.data:
-                intensity_measure, value = data.intensityMeasure.split(":")
+            for ex_data in ex.data:
+                intensity_measure, value = ex_data.intensityMeasure.split(":")
                 value = float(value) // 1
 
                 measure_factor = self.__intensity_measure_factor(measure=intensity_measure, value=value)
 
-                factor_effective = (data.weight * data.reps) * measure_factor
-                brut_volume = data.weight * data.reps
-                if data.date not in effective_series[ex.name]:
-                    effective_series[ex.name][data.date] = {
+                factor_effective = (ex_data.weight * ex_data.reps) * measure_factor
+                brut_volume = ex_data.weight * ex_data.reps
+                if ex_data.date not in effective_series[ex.name]:
+                    effective_series[ex.name][ex_data.date] = {
                         "factor_effectivenes": [factor_effective],
                         "volume_brut": [brut_volume]
                         }
                 else:
-                    effective_series[ex.name][data.date]["factor_effectivenes"].append(factor_effective)
-                    effective_series[ex.name][data.date]["volume_brut"].append(brut_volume)
+                    effective_series[ex.name][ex_data.date]["factor_effectivenes"].append(factor_effective)
+                    effective_series[ex.name][ex_data.date]["volume_brut"].append(brut_volume)
 
         for ex, val in effective_series.items():
             effective_total_vol = 0
