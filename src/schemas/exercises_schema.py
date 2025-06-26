@@ -16,11 +16,11 @@ class ExerciseDataModel(BaseModel):
     weight: str | int | float
     reps: str | int
     series: str | int
-    intensityMeasure: str | int | float
+    intensityMeasure: str
 
     @field_validator("intensityMeasure")
     @classmethod
-    def validate_intensity(cls, value: str) -> str:
+    def validate_intensity(cls, value: str ) -> str:
         """Validate intensity measure and return type."""
         value = float(value)
         return f"RPE:{value}" if value >= 6 else f"RIR:{value}"
