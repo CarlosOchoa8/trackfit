@@ -116,8 +116,10 @@ class VolumePerformanceCalculator(PerformanceCalculatorBaseClase):
 
             effective_series[ex][tmp_key] = {"effective_volume": f"{effective_volume}%"}
 
+        return {
+            "effective_volume": effective_series
+            }
 
-# C0406994358
     def __intensity_measure_factor(self, measure: str, value: float) -> float:
         """Return factor factor based con intensity measure."""
         m_factor = {
@@ -131,6 +133,5 @@ class VolumePerformanceCalculator(PerformanceCalculatorBaseClase):
             9: 1,
             10: 1
         }
-        print("---------------------- >")
-        print("VALOR DE VALUR", m_factor.get(value))
+
         return m_factor.get(value)
