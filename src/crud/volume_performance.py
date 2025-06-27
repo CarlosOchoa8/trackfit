@@ -79,7 +79,7 @@ class VolumePerformanceCalculator(PerformanceCalculatorBaseClase):
             "total_session_volume": sessions_volume
         }
 
-    def _calculate_effective_volume(self, data: ExerciseDataBody) -> Dict[str, Any]:
+    def _calculate_effective_volume(self, data: ExerciseDataBody) -> Dict[str, Dict[str, str]]:
         """Calculate effective volume based on level."""
         effective_series = {}
         for ex in data.exercises:
