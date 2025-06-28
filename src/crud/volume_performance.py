@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Type
 from src.crud.performance_base_class import PerformanceCalculatorBaseClase
 from src.schemas import ExerciseDataBody
 
@@ -12,7 +12,11 @@ class VolumePerformanceCalculator(PerformanceCalculatorBaseClase):
         effective_volume_dict = self._calculate_effective_volume(data=data)
 
         return {
-            "volume_performance": {**volume_total_dict, **total_session_volume_dict}
+            "volume_performance": {
+                **volume_total_dict,
+                **total_session_volume_dict,
+                **effective_volume_dict
+                }
             }
 
     def _calculate_total_volume(self, data: List) -> Dict[str, Dict]:
