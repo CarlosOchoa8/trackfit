@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Type
+from typing import List, Dict
 from src.crud.performance_base_class import PerformanceCalculatorBaseClase
 from src.schemas import ExerciseDataBody
 
