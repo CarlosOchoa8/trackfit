@@ -44,11 +44,14 @@ def calculate(exercise_data: ExerciseDataBody) -> CalculatePerformanceModel:
 
 
 @router.get("/get_exercises")
-def get_exercises() -> List[Dict[str, Any]]:
-    """Return RapidAPIService response."""
+def get_exercises(limit: int = 10, offset: int = 0) -> List[Dict[str, Any]]:
+    """Return RapidAPIService response.\n
+    :param limit: Qty of records to retrieve.\n
+    :param offset: Qty of records to ignore.\n
+    :return: List of Dict with data of exercises."""
     try:
         api_service = ExerciseRapidApiService()
-        response = api_service.get_exercise_list()
+        response = api_service.get_exercise_list(limit=limit, offset=offset)
 
         return response
 
