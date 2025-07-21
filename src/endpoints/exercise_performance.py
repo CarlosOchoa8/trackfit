@@ -1,11 +1,12 @@
 import traceback
+from typing import Any, Dict, List
 
 from fastapi import APIRouter, HTTPException, status
 
-from src.crud import MaxRep, PerformanceCalculator
+from src.crud import MaxRep, PerformanceCalculator, WorkoutProgressionClass
 from src.crud.volume_performance import VolumePerformanceCalculator
-from src.crud import WorkoutProgressionClass
 from src.schemas import CalculatePerformanceModel, ExerciseDataBody
+from src.services.exercisedb import ExerciseRapidApiService
 
 router = APIRouter(prefix="/performance")
 
@@ -41,6 +42,21 @@ def calculate(exercise_data: ExerciseDataBody) -> CalculatePerformanceModel:
             detail={"message": "An unexpected error has ocurred."}
         ) from exc
 
+
+@router.get("/get_exercises")
+def get_exercises() -> List[Dict[str, Any]]:
+    """Return RapidAPIService response."""
+    try:
+        api_service = ExerciseRapidApiService()
+        response = api_service.get_exercise_list()
+
+        return response
+
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"message": "An unexpected error has ocurred."}
+        ) from exc
 
 
 performance_router = router
