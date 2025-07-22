@@ -4,8 +4,9 @@ Module for the fastapi setup.
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-# from fastapi.staticfiles import StaticFiles
 
+# from fastapi.staticfiles import StaticFiles
+from src.config.core import core_settings
 from src.routers import router
 
 # app = FastAPI()
@@ -20,7 +21,7 @@ app = FastAPI(root_path="/trackfit_api")
 origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=core_settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
