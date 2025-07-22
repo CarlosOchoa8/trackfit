@@ -1,10 +1,11 @@
 import traceback
 from typing import Any, Dict, List
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.crud import MaxRep, PerformanceCalculator, WorkoutProgressionClass
 from src.crud.volume_performance import VolumePerformanceCalculator
+from src.middlewares import origin_request
 from src.schemas import CalculatePerformanceModel, ExerciseDataBody
 from src.services.exercisedb import ExerciseRapidApiService
 
@@ -43,7 +44,7 @@ def calculate(exercise_data: ExerciseDataBody) -> CalculatePerformanceModel:
         ) from exc
 
 
-@router.get("/get_exercises")
+@router.get("/get_exercises",dependencies=[Depends(origin_request)])
 def get_exercises(limit: int = 10, offset: int = 0) -> List[Dict[str, Any]]:
     """Return RapidAPIService response.\n
     :param limit: Qty of records to retrieve.\n
