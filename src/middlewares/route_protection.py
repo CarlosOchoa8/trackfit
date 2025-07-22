@@ -18,9 +18,11 @@ async def origin_request(request: Request) -> None:
     if referer := request.headers.get("referer"):
         par = urlparse(referer)
         rf_orig = f"{par.scheme}://{par.netloc}"
+        print("refer", referer)
         print("parsed", par)
         print("parsed origin", rf_orig)
         if referer not in core_settings.CORS_ORIGINS:
+            print("No hay referer", referer)
             raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail={"message": "Route don't found."}
@@ -28,6 +30,7 @@ async def origin_request(request: Request) -> None:
 
     if origin := request.headers.get("origin"):
         if origin not in core_settings.CORS_ORIGINS:
+            print("No hay origin", origin)
             raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail={"message": "Route don't found."}
