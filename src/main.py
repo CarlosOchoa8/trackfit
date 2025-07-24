@@ -3,10 +3,13 @@ Module for the fastapi setup.
 """
 
 from fastapi import Depends, FastAPI
+from fastapi.exceptions import RequestValidationError, ValidationException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import ValidationError
 
 # from fastapi.staticfiles import StaticFiles
 from src.config.core import core_settings
+from src.middlewares.exceptions import validation_request_exception_handler
 from src.routers import router
 
 # app = FastAPI()
@@ -26,6 +29,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_exception_handler(exc_class_or_status_code=RequestValidationError, handler=validation_request_exception_handler)
 
 app.include_router(
     router=router
