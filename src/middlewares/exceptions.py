@@ -4,33 +4,34 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
 
-# TODO check why this return a 200 code.
-async def validation_request_exception_handler(request: Request, exc: ValidationError) -> JSONResponse | None:
-    """Customized exception for any Pydantic validation errors."""
+async def validation_request_exception_handler(request: Request, exc: ValidationError) -> JSONResponse:
+    """Customized exception for any Pydantic request validation errors as app exception handler."""
     errors = []
 
     for ex in exc.errors():
-        err_data = {}
 
         message = ex.get("msg")
         field = ex.get("loc")[-1]
         err_type = ex.get("type")
         input_data = ex.get("input")
 
-        print("A VER EL ERROR AQUI", ex)
+        # TODO add more err_types for validations message
         if err_type == "missing":
             message = "This field is required."
         if err_type == "value_error":
             message = ex.get("ctx", {}).get("reason", message)
+        if err_type not in ["missing", "value_error"]:
+            print("============= ERR TYPE TO ADD =>", err_type)
 
-        err_data["message"] = message
-        err_data["field"] = field
-        err_data["input"] = input_data
+        err_data = {
+            "message": message,
+            "field": field,
+            "input": input_data
+        }
         errors.append(err_data)
 
-        print("=====================================")
-
     return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content={
             "error": True,
             "message": "Requested data missing.",
