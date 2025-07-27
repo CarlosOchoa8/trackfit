@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Dict
+from typing import Dict, Any
 
 from src.crud import PerformanceCalculatorBaseClase
 from src.schemas import ExerciseDataBody
@@ -7,9 +7,11 @@ from src.schemas import ExerciseDataBody
 
 class WorkoutProgressionClass(PerformanceCalculatorBaseClase):
     """Calculate progression in workout."""
+
     def calculate_performance(self, data: ExerciseDataBody):
         """Return workout exercise perormance."""
         load_progress = self._calculate_load_progress(data=data)
+        self._calculate_progressive_overload_index(data=data)
 
         return load_progress
     def _calculate_load_progress(self, data: ExerciseDataBody) -> Dict:
@@ -50,3 +52,13 @@ class WorkoutProgressionClass(PerformanceCalculatorBaseClase):
             }
 
         return {"load_progress": ex_load_progress}
+
+# TODO find the way on how to separate the date between data exercises
+    def _calculate_progressive_overload_index(self, data: ExerciseDataBody) -> Dict[str, Any]:
+        """Calculate over the time how the overload is.
+        :param data: body of data ExerciseDataBody.
+        :return: Dictionary with progress over the time."""
+        print("Data que estoy recibiendo =>")
+
+        for data in data.exercises:
+            print("DATA DE EJERCICIOS =>", data)
