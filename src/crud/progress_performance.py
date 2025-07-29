@@ -60,5 +60,79 @@ class WorkoutProgressionClass(PerformanceCalculatorBaseClase):
         :return: Dictionary with progress over the time."""
         print("Data que estoy recibiendo =>")
 
-        for data in data.exercises:
-            print("DATA DE EJERCICIOS =>", data)
+        exercise_by_name = {}
+        exercise_by_date = {}
+        for ex_data in data.exercises:
+            exercise_by_name |= {ex_data.name: ex_data.data}
+
+        for ex_name, ex_data in exercise_by_name.items():
+            for data in ex_data:
+
+                if exercise_by_date.get(ex_name) is None:
+                    exercise_by_date[ex_name] = {data.date: []}
+
+                if data.date not in exercise_by_date.get(ex_name):
+                    exercise_by_date[ex_name][data.date] = []
+
+                exercise_by_date[ex_name][data.date].append({
+                    "series": data.series,
+                    "weight": data.weight,
+                    "reps": data.reps,
+                    "intensity_measure": data.intensityMeasure,
+                    })
+
+        print("KEYS DE MI DICCIONARIO POR FECHA")
+        # print(exercise_by_date)
+
+        # Order exercises data by date
+        for ex_name in exercise_by_date:
+            data_ordered = sorted(exercise_by_date[ex_name].items(),
+                             key=lambda x: datetime.strptime(x[0], "%Y-%m-%d"))
+            exercise_by_date[ex_name].clear()
+            exercise_by_date[ex_name].update(data_ordered)  #type: ignore
+
+        # Iterate from last to new one exercise.
+        for exercise_name, exercise_data in exercise_by_date.items():
+            exercise_data_keys = list(exercise_data.keys())
+            exercise_data_keys_len = len(exercise_data_keys)
+
+
+            for index, data_key in enumerate(exercise_data_keys):
+                has_next = index + 1 < exercise_data_keys_len
+                # next_item = exercise_data_keys[index + 1] if has_next else None
+
+                if next_record := exercise_data_keys[index + 1] if has_next else None:
+                    data = self.__calculate_progress_between_sessions(
+                        prev_session=exercise_data[data_key],
+                        next_session=exercise_data[next_record]
+                    )
+
+    def __calculate_progress_between_sessions(
+            self,
+            prev_session: Dict[str, Any],
+            next_session: Dict[str, Any]
+            ) -> Dict[str, str | float] | Any:
+        """Calculate the difference overload on to differente day sessions for exercise."""
+        metrics = {}
+
+        # INTENSITY ABSOLUTE
+        prev_abs_int = sum(serie.get("weight") for serie in prev_session) / len(prev_session)
+        next_abs_int = sum(serie.get("weight") for serie in next_session) / len(next_session)
+
+        # INTENSITY RELATIVE SEE HOW THE INTENSITY MEASURE COMES FROM
+        # prev_rel_int = sum(serie.get("intensitymeasure") for serie in prev_session) / len(prev_session)
+        # next_rel_int = sum(serie.get("intensitymeasure") for serie in next_session) / len(prev_session)
+
+        # VOLUMEN
+        prev_rel_vol = sum(serie.get("weight") * serie.get("reps") for serie in prev_session)
+        next_rel_vol = sum(serie.get("weight") * serie.get("reps") for serie in next_session)
+
+        # MAX WEIGHT
+        prev_rel_weight = max(serie.get("weight") for serie in prev_session)
+        next_rel_weight = max(serie.get("weight") for serie in next_session)
+
+        # SERIE DENSITY
+        prev_dens_ser = prev_rel_vol / len(prev_session)
+        next_dens_ser = next_rel_vol / len(next_session)
+
+        return {"msg": "ok"}
