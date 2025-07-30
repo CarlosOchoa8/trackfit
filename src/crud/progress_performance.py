@@ -104,13 +104,17 @@ class WorkoutProgressionClass(PerformanceCalculatorBaseClase):
                 if next_record := exercise_data_keys[index + 1] if has_next else None:
                     data = self.__calculate_progress_between_sessions(
                         prev_session=exercise_data[data_key],
-                        next_session=exercise_data[next_record]
+                        prev_date=data_key,
+                        next_session=exercise_data[next_record],
+                        next_date=next_record
                     )
 
     def __calculate_progress_between_sessions(
             self,
             prev_session: Dict[str, Any],
-            next_session: Dict[str, Any]
+            prev_date: str | datetime,
+            next_session: Dict[str, Any],
+            next_date: str | datetime,
             ) -> Dict[str, str | float] | Any:
         """Calculate the difference overload on to differente day sessions for exercise."""
         metrics = {}
@@ -118,21 +122,47 @@ class WorkoutProgressionClass(PerformanceCalculatorBaseClase):
         # INTENSITY ABSOLUTE
         prev_abs_int = sum(serie.get("weight") for serie in prev_session) / len(prev_session)
         next_abs_int = sum(serie.get("weight") for serie in next_session) / len(next_session)
+        abs_int_diff = ((next_abs_int - next_abs_int) / prev_abs_int) * 100
+        abs_int_diff_perc = ((next_abs_int - prev_abs_int) / prev_abs_int) * 100
 
         # INTENSITY RELATIVE SEE HOW THE INTENSITY MEASURE COMES FROM
         # prev_rel_int = sum(serie.get("intensitymeasure") for serie in prev_session) / len(prev_session)
         # next_rel_int = sum(serie.get("intensitymeasure") for serie in next_session) / len(prev_session)
+        # rel_int_diff = ((next_rel_int - next_rel_int) / prev_rel_int) * 100
 
         # VOLUMEN
-        prev_rel_vol = sum(serie.get("weight") * serie.get("reps") for serie in prev_session)
-        next_rel_vol = sum(serie.get("weight") * serie.get("reps") for serie in next_session)
+        prev_vol = sum(serie.get("weight") * serie.get("reps") for serie in prev_session)
+        next_vol = sum(serie.get("weight") * serie.get("reps") for serie in next_session)
+        vol_diff = next_vol - prev_vol
+        abs_int_diff_perc = ((next_vol - prev_vol) / prev_vol) * 100
 
         # MAX WEIGHT
-        prev_rel_weight = max(serie.get("weight") for serie in prev_session)
-        next_rel_weight = max(serie.get("weight") for serie in next_session)
+        prev_weight = max(serie.get("weight") for serie in prev_session)
+        next_weight = max(serie.get("weight") for serie in next_session)
+        weight_diff = ((next_weight - prev_weight) / prev_weight) * 100
 
         # SERIE DENSITY
-        prev_dens_ser = prev_rel_vol / len(prev_session)
-        next_dens_ser = next_rel_vol / len(next_session)
+        prev_dens = prev_vol / len(prev_session)
+        next_dens = next_vol / len(next_session)
+        dens_diff = ((next_dens - prev_dens) / next_dens) * 100
+
+        metrics = {
+            "from": prev_date,
+            "to": next_date,
+            "metrics": {
+                "absolute_intensity": {
+                    "previous": prev_abs_int,
+                    "next": next_abs_int,
+                    "weight_diff": abs_int_diff,
+                    "percentage_diff": round(abs_int_diff_perc, 2)
+                },
+                "volume": {
+                    "previous": prev_vol,
+                    "next": next_vol,
+                    "weight_diff": vol_diff,
+                    "percentage_diff": abs_int_diff_perc
+                }
+            }
+        }
 
         return {"msg": "ok"}
