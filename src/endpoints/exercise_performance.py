@@ -31,7 +31,7 @@ def calculate(exercise_data: ExerciseDataBody) -> CalculatePerformanceModel:
         return CalculatePerformanceModel(
             data={
                 **volume_performance,
-                "1rm_performance": _1rm_theorical,
+                "rm_performance": _1rm_theorical,
                 **workout_progress,
             }
         )
