@@ -8,7 +8,7 @@ class CoreSettings(BaseSettings):
     """
 
     # APP_SETTINGS
-    APP_NAME: str = Field(default="Smithy API", description="Name of the application")
+    APP_NAME: str = Field(default="Trackfit API", description="Name of the application")
     VERSION: str = Field(default="0.1.0", description="Application version")
 
     # CORS settings
