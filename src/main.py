@@ -12,8 +12,7 @@ from src.config.core import core_settings
 from src.middlewares.exceptions import validation_request_exception_handler
 from src.routers import router
 
-# app = FastAPI()
-# app = FastAPI(openapi_prefix="/trackfit_api")
+
 app = FastAPI(root_path="/trackfit_api")
 
 #  Setup CORS Middleware
